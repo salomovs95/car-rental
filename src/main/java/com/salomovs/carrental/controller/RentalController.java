@@ -6,15 +6,12 @@ import com.salomovs.carrental.db.entity.Invoice;
 import com.salomovs.carrental.service.InvoiceService;
 import com.salomovs.carrental.service.RentalService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RentalController implements Controller {
   private final RentalService rentalService;
   private final InvoiceService invoiceService;
-
-  public RentalController(RentalService rService,
-                          InvoiceService iService) {
-    rentalService = rService;
-    invoiceService = iService;
-  }
 
   @Override
   public void handle(Scanner scanner) {
@@ -68,7 +65,6 @@ public class RentalController implements Controller {
     System.out.print("Enter rental ID: ");
     Integer rentalId = Integer.valueOf(scanner.nextLine());
     Invoice invoice = invoiceService.processInvoice(rentalId);
-    if (invoice.rental().getReturnAt() == null) throw new RuntimeException("Can generate invoices for returned vehicles only!");
     System.out.println(invoice);
   }
 

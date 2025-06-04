@@ -6,18 +6,15 @@ import com.salomovs.carrental.db.entity.Rental;
 import com.salomovs.carrental.db.entity.Vehicle;
 import com.salomovs.carrental.db.repository.Repository;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RentalService {
   private Repository<Vehicle> vhRepo;
   private Repository<Rental> rtRepo;
   
-  public RentalService(Repository<Rental> rtRepo,
-                       Repository<Vehicle> vhRepo) {
-    this.rtRepo = rtRepo;
-    this.vhRepo = vhRepo;
-  }
-
   public Integer rentCar(Integer customerId, Integer vehicleId) {
-    Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId);
+    Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId, 0);
     int rentalId = rtRepo.save(rental);
     return rentalId;
   }

@@ -5,12 +5,11 @@ import java.util.Scanner;
 
 import com.salomovs.carrental.service.CustomerService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class CustomerController implements Controller {
   private final CustomerService customerService;
-
-  public CustomerController(CustomerService service) {
-    customerService = service;
-  }
 
   @Override
   public void handle(Scanner scanner) {

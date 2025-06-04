@@ -5,12 +5,11 @@ import java.util.Optional;
 import com.salomovs.carrental.db.entity.Customer;
 import com.salomovs.carrental.db.repository.Repository;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class CustomerService {
   private Repository<Customer> ctRepo;
-
-  public CustomerService(Repository<Customer> ctRepo) {
-    this.ctRepo = ctRepo;
-  }
 
   public Integer saveCustomer(String taxId,
                               String fullName,

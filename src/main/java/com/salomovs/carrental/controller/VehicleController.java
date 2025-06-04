@@ -7,12 +7,11 @@ import java.util.Scanner;
 import com.salomovs.carrental.db.entity.Vehicle;
 import com.salomovs.carrental.service.VehicleService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class VehicleController implements Controller {
   private final VehicleService vehicleService;
-
-  public VehicleController(VehicleService service) {
-    vehicleService = service;
-  }
 
   @Override
   public void handle(Scanner scanner) {

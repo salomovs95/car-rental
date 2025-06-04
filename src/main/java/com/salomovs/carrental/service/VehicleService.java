@@ -7,12 +7,11 @@ import com.salomovs.carrental.db.entity.Plate;
 import com.salomovs.carrental.db.entity.Vehicle;
 import com.salomovs.carrental.db.repository.Repository;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class VehicleService {
   private Repository<Vehicle> vhRepo;
-
-  public VehicleService(Repository<Vehicle> vhRepo) {
-    this.vhRepo = vhRepo;
-  }
 
   public Integer registerVehicle(String model,
                                  String brand,

@@ -34,7 +34,7 @@ public class App {
 
     RentalORM rOrm = new RentalORM();
     RentalRepository rRepo = new RentalRepository(rOrm);
-    RentalService rService = new RentalService(rRepo, vRepo);
+    RentalService rService = new RentalService(vRepo, rRepo);
     InvoiceService iService = new InvoiceService(tService, cRepo, vRepo, rRepo);
     RentalController rentalController = new RentalController(rService, iService);
  
