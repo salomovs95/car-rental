@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.salomovs.carrental.db.entity.Plate;
 import com.salomovs.carrental.db.entity.Vehicle;
 import com.salomovs.carrental.db.repository.Repository;
+import com.salomovs.carrental.exception.VehicleNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -32,7 +33,7 @@ public class VehicleService {
                             Optional<Integer> dailyPrice,
                             Optional<Integer> hourPrice) {
     Vehicle vehicle = vhRepo.findById(id)
-                            .orElseThrow(()->new RuntimeException("Vehicle Not Found"));
+                            .orElseThrow(VehicleNotFoundException::new);
 
     if (model.isPresent()) vehicle.setModel(model.get());
     if (brand.isPresent()) vehicle.setBrand(brand.get());

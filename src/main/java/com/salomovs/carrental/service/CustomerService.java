@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.salomovs.carrental.db.entity.Customer;
 import com.salomovs.carrental.db.repository.Repository;
+import com.salomovs.carrental.exception.CustomerNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -25,7 +26,7 @@ public class CustomerService {
                            Optional<String> email,
                            Optional<String> phone) {
     Customer customer = ctRepo.findById(id)
-                              .orElseThrow(()->new RuntimeException("Customer Not Found"));
+                              .orElseThrow(CustomerNotFoundException::new);
 
     if (taxId.isPresent()) customer.setTaxId(taxId.get());
     if (fullName.isPresent()) customer.setFullName(fullName.get());

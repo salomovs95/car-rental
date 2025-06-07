@@ -1,5 +1,10 @@
 package com.salomovs.carrental;
 
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 import com.salomovs.carrental.controller.CustomerController;
@@ -19,7 +24,19 @@ import com.salomovs.carrental.service.VehicleService;
 import com.salomovs.carrental.service.types.TaxService;
 
 public class App {
+  private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
   public static void main(String[] args) {
+    /*
+    String dbUrl = System.getenv("DATABASE_URL");
+
+    try {
+      Class.forName("org.postgresql.Driver");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    */
+
     TaxService tService = new BrazilTaxService();
 
     CustomerORM cOrm = new CustomerORM();
@@ -38,7 +55,7 @@ public class App {
     InvoiceService iService = new InvoiceService(tService, cRepo, vRepo, rRepo);
     RentalController rentalController = new RentalController(rService, iService);
  
-    try (Scanner scanner = new Scanner(System.in)) {
+    try (Scanner scanner = new Scanner(System.in) ) { //Connection conn = DriverManager.getConnection(String.format("%s?user=postgres&password=postgres", dbUrl)); {
       char continues = 'Y';
       
       while(continues != 'N') {
@@ -76,6 +93,11 @@ public class App {
         if (continues == 'Y') clearScreen();
       }
     } catch (Exception e) {
+      String error = String.format("%s [EXCEPTION] %s: %s",
+                                   dtf.format(LocalDateTime.now()),
+                                   e.getClass().getName(),
+                                   e.getLocalizedMessage());
+      System.out.println(error);
       e.printStackTrace();
     } finally {
       System.out.println("Comeback anytime! S2");
