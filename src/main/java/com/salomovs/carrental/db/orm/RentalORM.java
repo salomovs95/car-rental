@@ -20,12 +20,13 @@ public class RentalORM implements ORM<Rental> {
   @Override
   public Rental parseString(String rawData) {
     String[] data = rawData.split(",");
+    LocalDateTime returnAt = data[4].equals("null") ? null : LocalDateTime.parse(data[4]);
     Rental rental = new Rental(Integer.valueOf(data[0]),
                                LocalDateTime.parse(data[3]),
-                               LocalDateTime.parse(data[4]),
+                               returnAt,
                                Integer.valueOf(data[1]),
-                               Integer.valueOf(data[2]));
-    rental.setAmountToPay(Integer.valueOf(data[5]));
+                               Integer.valueOf(data[2]),
+                               Integer.valueOf(data[5]));
     return rental;
   }
 }

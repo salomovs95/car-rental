@@ -5,31 +5,29 @@ import java.time.LocalDateTime;
 import com.salomovs.carrental.db.entity.Rental;
 import com.salomovs.carrental.db.entity.Vehicle;
 import com.salomovs.carrental.db.repository.Repository;
+import com.salomovs.carrental.exception.RentalNotFoundException;
+import com.salomovs.carrental.exception.VehicleNotFoundException;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RentalService {
   private Repository<Vehicle> vhRepo;
   private Repository<Rental> rtRepo;
   
-  public RentalService(Repository<Rental> rtRepo,
-                       Repository<Vehicle> vhRepo) {
-    this.rtRepo = rtRepo;
-    this.vhRepo = vhRepo;
-  }
-
   public Integer rentCar(Integer customerId, Integer vehicleId) {
-    Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId);
+    Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId, 0);
     int rentalId = rtRepo.save(rental);
     return rentalId;
   }
 
   public void returnCar(Integer rentalId) {
-    if (rtRepo.findById(rentalId).isEmpty()) throw new RuntimeException("Rental Not Found.");
     Rental rental = rtRepo.findById(rentalId)
-                          .orElseThrow(()->new RuntimeException("Rental Not Found"));
+                          .orElseThrow(RentalNotFoundException::new);
     
     double duration = rental.calculateInterval();
     Vehicle vehicle = vhRepo.findById(rental.getVehicleId())
-                            .orElseThrow(()->new RuntimeException("Vehicle Not Found"));
+                            .orElseThrow(VehicleNotFoundException::new);
     
     int price = (duration > 12) ? vehicle.getDailyPrice() : vehicle.getHourPrice();
     double amountToPay  = duration * (price/1d) * 100;

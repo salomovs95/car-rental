@@ -1,6 +1,9 @@
 package com.salomovs.carrental;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +17,7 @@ public class AppTest {
    */
   @Test
   public void shouldAnswerWithTrue() {
-    String lol = "1234567";
-    assertEquals(12345.67, Integer.valueOf(lol)/100d);
+    String lol = "20205-01-01T00:00:00";
+    assertDoesNotThrow(()->LocalDateTime.parse(lol));
   }
 }
