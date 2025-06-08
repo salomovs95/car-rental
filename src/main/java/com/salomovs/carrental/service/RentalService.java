@@ -2,22 +2,25 @@ package com.salomovs.carrental.service;
 
 import java.time.LocalDateTime;
 
-import com.salomovs.carrental.db.entity.Rental;
-import com.salomovs.carrental.db.entity.Vehicle;
-import com.salomovs.carrental.db.repository.Repository;
+import org.springframework.stereotype.Service;
+
+import com.salomovs.carrental.model.entity.Rental;
+import com.salomovs.carrental.model.repository.RentalRepository;
+import com.salomovs.carrental.model.repository.VehicleRepository;
+import com.salomovs.carrental.model.entity.Vehicle;
 import com.salomovs.carrental.exception.RentalNotFoundException;
 import com.salomovs.carrental.exception.VehicleNotFoundException;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@Service @RequiredArgsConstructor
 public class RentalService {
-  private Repository<Vehicle> vhRepo;
-  private Repository<Rental> rtRepo;
+  private VehicleRepository vhRepo;
+  private RentalRepository rtRepo;
   
   public Integer rentCar(Integer customerId, Integer vehicleId) {
     Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId, 0);
-    int rentalId = rtRepo.save(rental);
+    int rentalId = rtRepo.save(rental).getId();
     return rentalId;
   }
 
@@ -34,6 +37,6 @@ public class RentalService {
 
     rental.setAmountToPay((int) amountToPay);
 
-    rtRepo.update(rental);
+    rtRepo.save(rental);
   }
 }

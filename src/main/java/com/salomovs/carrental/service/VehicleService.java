@@ -3,16 +3,16 @@ package com.salomovs.carrental.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.salomovs.carrental.db.entity.Plate;
-import com.salomovs.carrental.db.entity.Vehicle;
-import com.salomovs.carrental.db.repository.Repository;
+import com.salomovs.carrental.model.entity.Plate;
+import com.salomovs.carrental.model.entity.Vehicle;
+import com.salomovs.carrental.model.repository.VehicleRepository;
 import com.salomovs.carrental.exception.VehicleNotFoundException;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class VehicleService {
-  private Repository<Vehicle> vhRepo;
+  private VehicleRepository vhRepo;
 
   public Integer registerVehicle(String model,
                                  String brand,
@@ -22,7 +22,7 @@ public class VehicleService {
                                  String country) {
     Plate plate = new Plate(plateNumber, country);
     Vehicle vehicle = new Vehicle(null, model, brand, dailyPrice, hourPrice, plate);
-    return vhRepo.save(vehicle);
+    return vhRepo.save(vehicle).getId();
   }
 
   public void updateVehicle(Integer id,
@@ -42,7 +42,7 @@ public class VehicleService {
     if (dailyPrice.isPresent()) vehicle.setDailyPrice(dailyPrice.get());
     if (hourPrice.isPresent()) vehicle.setHourPrice(hourPrice.get());
 
-    vhRepo.update(vehicle);
+    vhRepo.save(vehicle);
   }
 
   public List<Vehicle> listAvailableVehicles() {
