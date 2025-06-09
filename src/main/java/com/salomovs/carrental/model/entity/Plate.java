@@ -6,8 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Embeddable
-@Getter @Setter @AllArgsConstructor
+@Embeddable @Getter @Setter @AllArgsConstructor
 public class Plate {
   private String value;
   private String country;

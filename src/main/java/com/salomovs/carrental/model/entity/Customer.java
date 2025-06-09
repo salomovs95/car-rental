@@ -19,7 +19,12 @@ public class Customer {
 
   @Column(unique=true)
   private String taxId;
+
   private String fullName;
+
+  @Column(unique=true)
   private String email;
+
+  @Column(unique=true)
   private String phone;
 }

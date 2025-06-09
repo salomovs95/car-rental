@@ -1,5 +1,9 @@
 package com.salomovs.carrental.model.entity;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +25,11 @@ public class Vehicle {
   private Integer dailyPrice;
   private Integer hourPrice;
 
+  @Embedded
+  @AttributeOverrides({
+    @AttributeOverride(name="value", column=@Column(name="plate_number")),
+    @AttributeOverride(name="country", column=@Column(name="plate_country"))
+  })
   private Plate plate;
 
 }
