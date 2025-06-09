@@ -22,8 +22,7 @@ public class CustomerService {
   }
 
   public void saveCustomer(Integer id, UpdateCustomerDto dto) {
-    Customer customer = ctRepo.findById(id)
-                              .orElseThrow(CustomerNotFoundException::new);
+    Customer customer = findCustomer(id);
 
     String email = dto.email().orElse(customer.getEmail());
     String fullName = dto.fullName().orElse(customer.getFullName());
@@ -40,5 +39,11 @@ public class CustomerService {
 
   public List<Customer> listCustomers() {
     return ctRepo.findAll();
+  }
+
+  public Customer findCustomer(Integer customerId) {
+    Customer customer = ctRepo.findById(customerId)
+                              .orElseThrow(CustomerNotFoundException::new);
+    return customer;
   }
 }
