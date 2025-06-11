@@ -1,15 +1,15 @@
 package com.salomovs.carrental.service;
 
+import lombok.AllArgsConstructor;
+
+import org.springframework.stereotype.Service;
+
 import com.salomovs.carrental.dto.InvoiceDto;
 import com.salomovs.carrental.exception.InvoiceProcessingException;
 import com.salomovs.carrental.model.entity.Rental;
 import com.salomovs.carrental.service.types.TaxService;
 
-import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-
-@Service @RequiredArgsConstructor
+@Service @AllArgsConstructor
 public class InvoiceService {
   private final TaxService taxService;
 

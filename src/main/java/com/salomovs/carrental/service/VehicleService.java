@@ -2,6 +2,10 @@ package com.salomovs.carrental.service;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+
+import org.springframework.stereotype.Service;
+
 import com.salomovs.carrental.model.entity.Plate;
 import com.salomovs.carrental.model.entity.Vehicle;
 import com.salomovs.carrental.model.repository.VehicleRepository;
@@ -9,11 +13,9 @@ import com.salomovs.carrental.dto.RegisterVehicleDto;
 import com.salomovs.carrental.dto.UpdateVehicleDto;
 import com.salomovs.carrental.exception.VehicleNotFoundException;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
+@Service @AllArgsConstructor
 public class VehicleService {
-  private VehicleRepository vhRepo;
+  private final VehicleRepository vhRepo;
 
   public Integer registerVehicle(RegisterVehicleDto dto) {
     Plate plate = new Plate(dto.plate(), dto.country());

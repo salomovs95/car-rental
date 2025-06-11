@@ -2,6 +2,8 @@ package com.salomovs.carrental.service;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import com.salomovs.carrental.model.entity.Customer;
@@ -10,11 +12,9 @@ import com.salomovs.carrental.dto.RegisterCustomerDto;
 import com.salomovs.carrental.dto.UpdateCustomerDto;
 import com.salomovs.carrental.exception.CustomerNotFoundException;
 
-import lombok.RequiredArgsConstructor;
-
-@Service @RequiredArgsConstructor
+@Service @AllArgsConstructor
 public class CustomerService {
-  private CustomerRepository ctRepo;
+  private final CustomerRepository ctRepo;
 
   public Integer saveCustomer(RegisterCustomerDto dto) {
     Customer customer = new Customer(null, dto.taxId(), dto.fullName(), dto.email(), dto.phone());

@@ -3,7 +3,7 @@ package com.salomovs.carrental.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,9 @@ import com.salomovs.carrental.model.entity.Rental;
 import com.salomovs.carrental.model.entity.Vehicle;
 import com.salomovs.carrental.model.repository.RentalRepository;
 
-@Service @RequiredArgsConstructor
+@Service @AllArgsConstructor
 public class RentalService {
-  private RentalRepository rtRepo;
+  private final RentalRepository rtRepo;
   
   public Integer rentVehicle(Customer customer, Vehicle vehicle) {
     Rental rental = new Rental(null, LocalDateTime.now(), null, 0, vehicle, customer);
