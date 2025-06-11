@@ -12,13 +12,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import com.salomovs.carrental.model.enums.RentalConstant;
 
 @Entity @Table(name="tbl_rentals")
-@Getter @Setter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor
 public class Rental {
   @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
