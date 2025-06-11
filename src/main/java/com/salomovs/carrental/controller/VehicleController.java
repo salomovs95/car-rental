@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,7 @@ public class VehicleController {
     this.logger = LoggerFactory.getLogger(VehicleController.class);
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Void> registerVehicle(@RequestBody @Valid RegisterVehicleDto body) {
     Integer vehicleId = vehicleService.registerVehicle(body);
     logger.info("New vehicle created with ID: " + vehicleId);
@@ -46,6 +47,7 @@ public class VehicleController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
+  @GetMapping
   public ResponseEntity<List<Vehicle>> listVehicles() {
     List<Vehicle> vehicles = vehicleService.listAvailableVehicles();
     return ResponseEntity.status(HttpStatus.OK).body(vehicles);

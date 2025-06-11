@@ -31,7 +31,7 @@ public class CustomerController {
     this.logger = LoggerFactory.getLogger(CustomerController.class);
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Void> registerCustomer(@RequestBody @Valid RegisterCustomerDto body) {
     int customerId = customerService.saveCustomer(body);
     logger.info("New customer created with ID: " + customerId);
@@ -46,7 +46,7 @@ public class CustomerController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<Customer>> listCustomers() {
     List<Customer> customers = customerService.listCustomers();
     return ResponseEntity.status(HttpStatus.OK).body(customers);

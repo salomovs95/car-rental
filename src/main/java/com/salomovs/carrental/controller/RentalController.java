@@ -46,7 +46,7 @@ public class RentalController {
     this.invoiceService = invoiceService;
   }
 
-  @PostMapping("")
+  @PostMapping
   public ResponseEntity<Void> handleRentalment(@RequestBody @Valid VehicleRentalDto body) {
     Customer customer = customerService.findCustomer(body.customerId());
     Vehicle vehicle = vehicleService.findVehicle(body.vehicleId());
@@ -63,7 +63,7 @@ public class RentalController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @GetMapping("")
+  @GetMapping
   public ResponseEntity<List<Rental>> listRentals() {
     List<Rental> rentals = rentalService.listRentals();
     return ResponseEntity.status(HttpStatus.OK).body(rentals);
