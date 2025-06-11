@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity @Table(name="tbl_vehicles")
 @Getter @Setter @AllArgsConstructor
 public class Vehicle {
-  @Id @GeneratedValue(strategy=GenerationType.UUID)
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
   private String model;
   private String brand;

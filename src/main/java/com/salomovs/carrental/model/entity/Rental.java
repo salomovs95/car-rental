@@ -20,7 +20,7 @@ import com.salomovs.carrental.model.enums.RentalConstant;
 @Entity @Table(name="tbl_rentals")
 @Getter @Setter @AllArgsConstructor
 public class Rental {
-  @Id @GeneratedValue(strategy=GenerationType.AUTO)
+  @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
   private Integer id;
   
   private LocalDateTime rentAt;
