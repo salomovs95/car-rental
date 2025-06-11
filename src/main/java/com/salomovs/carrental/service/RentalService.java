@@ -1,39 +1,50 @@
 package com.salomovs.carrental.service;
 
 import java.time.LocalDateTime;
-
-import com.salomovs.carrental.db.entity.Rental;
-import com.salomovs.carrental.db.entity.Vehicle;
-import com.salomovs.carrental.db.repository.Repository;
-import com.salomovs.carrental.exception.RentalNotFoundException;
-import com.salomovs.carrental.exception.VehicleNotFoundException;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
+import org.springframework.stereotype.Service;
+
+import com.salomovs.carrental.exception.RentalNotFoundException;
+import com.salomovs.carrental.model.entity.Customer;
+import com.salomovs.carrental.model.entity.Rental;
+import com.salomovs.carrental.model.entity.Vehicle;
+import com.salomovs.carrental.model.repository.RentalRepository;
+
+@Service @AllArgsConstructor
 public class RentalService {
-  private Repository<Vehicle> vhRepo;
-  private Repository<Rental> rtRepo;
+  private final RentalRepository rtRepo;
   
-  public Integer rentCar(Integer customerId, Integer vehicleId) {
-    Rental rental = new Rental(null, LocalDateTime.now(), null, vehicleId, customerId, 0);
-    int rentalId = rtRepo.save(rental);
+  public Integer rentVehicle(Customer customer, Vehicle vehicle) {
+    Rental rental = new Rental(null, LocalDateTime.now(), null, 0, vehicle, customer);
+    int rentalId = rtRepo.save(rental).getId();
+    
     return rentalId;
   }
 
-  public void returnCar(Integer rentalId) {
-    Rental rental = rtRepo.findById(rentalId)
-                          .orElseThrow(RentalNotFoundException::new);
+  public void returnVehicle(Integer rentalId) {
+    Rental rental = findRental(rentalId);
     
     double duration = rental.calculateInterval();
-    Vehicle vehicle = vhRepo.findById(rental.getVehicleId())
-                            .orElseThrow(VehicleNotFoundException::new);
+    Vehicle vehicle = rental.getVehicle();
     
     int price = (duration > 12) ? vehicle.getDailyPrice() : vehicle.getHourPrice();
     double amountToPay  = duration * (price/1d) * 100;
 
     rental.setAmountToPay((int) amountToPay);
 
-    rtRepo.update(rental);
+    rtRepo.save(rental);
+  }
+
+  public Rental findRental(Integer rentalId) {
+    Rental rental = rtRepo.findById(rentalId)
+                          .orElseThrow(RentalNotFoundException::new);
+    return rental;
+  }
+
+  public List<Rental> listRentals() {
+    return rtRepo.findAll();
   }
 }

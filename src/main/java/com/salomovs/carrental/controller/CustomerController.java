@@ -1,66 +1,60 @@
 package com.salomovs.carrental.controller;
 
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.List;
 
+import jakarta.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.salomovs.carrental.dto.RegisterCustomerDto;
+import com.salomovs.carrental.dto.UpdateCustomerDto;
+import com.salomovs.carrental.model.entity.Customer;
 import com.salomovs.carrental.service.CustomerService;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public class CustomerController implements Controller {
+@RestController @RequestMapping("/customers")
+public class CustomerController {
   private final CustomerService customerService;
+  private final Logger logger;
 
-  @Override
-  public void handle(Scanner scanner) {
-    System.out.println("Which service you need?");
-    System.out.println("Customer Registration (R)");
-    System.out.println("Update Customer's Data (U)");
-    System.out.print("Select an option: ");
-    char option = scanner.nextLine()
-                         .toUpperCase()
-                         .charAt(0);
-
-    switch (option) {
-      case 'R':
-        registerCustomer(scanner);
-        break;
-      case 'U':
-        updateCustomer(scanner);
-        break;
-      default:
-        System.out.println("Invalid Option!");
-        break;
-    }
+  public CustomerController(final CustomerService customerService) {
+    this.customerService = customerService;
+    this.logger = LoggerFactory.getLogger(CustomerController.class);
   }
 
-  public void registerCustomer(Scanner scanner) {
-    System.out.print("Customer's tax ID: ");
-    String taxId = scanner.nextLine();
-    System.out.print("Customer's full name: ");
-    String fullName = scanner.nextLine();
-    System.out.print("Customer's email: ");
-    String email = scanner.nextLine();
-    System.out.print("Customer's phone number: ");
-    String phone = scanner.nextLine();
-
-    Integer customerId = customerService.saveCustomer(taxId, fullName, email, phone);
-    System.out.println("Customer's registered under iD: " + customerId);
+  @PostMapping("")
+  public ResponseEntity<Void> registerCustomer(@RequestBody @Valid RegisterCustomerDto body) {
+    int customerId = customerService.saveCustomer(body);
+    logger.info("New customer created with ID: " + customerId);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  public void updateCustomer(Scanner scanner) {
-    System.out.print("Customer's ID: ");
-    Integer customerId = Integer.valueOf(scanner.nextLine());
-    System.out.print("Customer's tax ID: ");
-    Optional<String> taxId = Optional.of(scanner.nextLine());
-    System.out.print("Customer's full name: ");
-    Optional<String> fullName = Optional.of(scanner.nextLine());
-    System.out.print("Customer's email: ");
-    Optional<String> email = Optional.of(scanner.nextLine());
-    System.out.print("Customer's phone number: ");
-    Optional<String> phone = Optional.of(scanner.nextLine());
+  @PutMapping("/{customerId}/update")
+  public ResponseEntity<Void> updateCustomer(@RequestParam Integer customerId,
+                                             @RequestBody UpdateCustomerDto body) {
+    customerService.saveCustomer(customerId, body);
+    logger.info("Successfully updated customer with ID: " + customerId);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 
-    customerService.saveCustomer(customerId, taxId, fullName, email, phone);
-    System.out.println("Customer updated! ID " + customerId);
+  @GetMapping("")
+  public ResponseEntity<List<Customer>> listCustomers() {
+    List<Customer> customers = customerService.listCustomers();
+    return ResponseEntity.status(HttpStatus.OK).body(customers);
+  }
+
+  @GetMapping("/{customerId}")
+  public ResponseEntity<Customer> getCustomerInfo(@RequestParam Integer customerId) {
+    Customer customer = customerService.findCustomer(customerId);
+    return ResponseEntity.status(HttpStatus.OK).body(customer);
   }
 }

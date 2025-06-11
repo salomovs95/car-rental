@@ -1,38 +1,49 @@
 package com.salomovs.carrental.service;
 
-import java.util.Optional;
-
-import com.salomovs.carrental.db.entity.Customer;
-import com.salomovs.carrental.db.repository.Repository;
-import com.salomovs.carrental.exception.CustomerNotFoundException;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class CustomerService {
-  private Repository<Customer> ctRepo;
+import org.springframework.stereotype.Service;
 
-  public Integer saveCustomer(String taxId,
-                              String fullName,
-                              String email,
-                              String phone) {
-    Customer customer = new Customer(null, taxId, fullName, email, phone);
-    return ctRepo.save(customer);
+import com.salomovs.carrental.model.entity.Customer;
+import com.salomovs.carrental.model.repository.CustomerRepository;
+import com.salomovs.carrental.dto.RegisterCustomerDto;
+import com.salomovs.carrental.dto.UpdateCustomerDto;
+import com.salomovs.carrental.exception.CustomerNotFoundException;
+
+@Service @AllArgsConstructor
+public class CustomerService {
+  private final CustomerRepository ctRepo;
+
+  public Integer saveCustomer(RegisterCustomerDto dto) {
+    Customer customer = new Customer(null, dto.taxId(), dto.fullName(), dto.email(), dto.phone());
+    return ctRepo.save(customer).getId();
   }
 
-  public void saveCustomer(Integer id,
-                           Optional<String> taxId,
-                           Optional<String> fullName,
-                           Optional<String> email,
-                           Optional<String> phone) {
-    Customer customer = ctRepo.findById(id)
+  public void saveCustomer(Integer id, UpdateCustomerDto dto) {
+    Customer customer = findCustomer(id);
+
+    String email = dto.email().orElse(customer.getEmail());
+    String fullName = dto.fullName().orElse(customer.getFullName());
+    String phone = dto.phone().orElse(customer.getPhone());
+    String taxId = dto.taxId().orElse(customer.getTaxId());
+
+    customer.setTaxId(taxId);
+    customer.setFullName(fullName);
+    customer.setEmail(email);
+    customer.setPhone(phone);
+
+    ctRepo.save(customer);
+  }
+
+  public List<Customer> listCustomers() {
+    return ctRepo.findAll();
+  }
+
+  public Customer findCustomer(Integer customerId) {
+    Customer customer = ctRepo.findById(customerId)
                               .orElseThrow(CustomerNotFoundException::new);
-
-    if (taxId.isPresent()) customer.setTaxId(taxId.get());
-    if (fullName.isPresent()) customer.setFullName(fullName.get());
-    if (email.isPresent()) customer.setEmail(email.get());
-    if (phone.isPresent()) customer.setPhone(phone.get());
-
-    ctRepo.update(customer);
+    return customer;
   }
 }

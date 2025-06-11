@@ -1,85 +1,53 @@
 package com.salomovs.carrental.controller;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
 
-import com.salomovs.carrental.db.entity.Vehicle;
+import jakarta.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.salomovs.carrental.dto.RegisterVehicleDto;
+import com.salomovs.carrental.dto.UpdateVehicleDto;
+import com.salomovs.carrental.model.entity.Vehicle;
 import com.salomovs.carrental.service.VehicleService;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
-public class VehicleController implements Controller {
+@RestController @RequestMapping("/vehicles")
+public class VehicleController {
   private final VehicleService vehicleService;
+  private Logger logger;
 
-  @Override
-  public void handle(Scanner scanner) {
-    System.out.println("Which service you need?");
-    System.out.println("Register a new vehicle (R)");
-    System.out.println("Update an existing vehicle (U)");
-    System.out.println("Retrieve available vehicles (L)");
-    System.out.print("Select an option: ");
-    char option = scanner.nextLine()
-                         .toUpperCase()
-                         .charAt(0);
-
-    switch(option) {
-      case 'R':
-        registerVehicle(scanner);
-        break;
-      case 'L':
-        listAvailableVehicles(scanner);
-        break;
-      case 'U':
-        updateVehicle(scanner);
-        break;
-      default:
-        System.out.println("Invalid Option!");
-        break;
-    }
+  public VehicleController(final VehicleService vehicleService) {
+    this.vehicleService = vehicleService;
+    this.logger = LoggerFactory.getLogger(VehicleController.class);
   }
 
-  public void registerVehicle(Scanner scanner) {
-    System.out.print("Vehicle's model: ");
-    String model = scanner.nextLine();
-    System.out.print("Vehicle's brand: ");
-    String brand = scanner.nextLine();
-    System.out.print("Daily price: ");
-    Integer dailyPrice = Integer.valueOf(scanner.nextLine());
-    System.out.print("Hour price: ");
-    Integer hourPrice = Integer.valueOf(scanner.nextLine());
-    System.out.print("Vehicle's plate number: ");
-    String plateNumber = scanner.nextLine();
-    System.out.print("Vehicle's plate country: ");
-    String country = scanner.nextLine();
-
-    Integer vehicleId = vehicleService.registerVehicle(model, brand, dailyPrice, hourPrice, plateNumber, country);
-    System.out.println("Vehicle registered under ID: " + vehicleId);
+  @PostMapping("")
+  public ResponseEntity<Void> registerVehicle(@RequestBody @Valid RegisterVehicleDto body) {
+    Integer vehicleId = vehicleService.registerVehicle(body);
+    logger.info("New vehicle created with ID: " + vehicleId);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  public void listAvailableVehicles(Scanner scanner) {
+  @PutMapping("/{vehicleId}/update")
+  public ResponseEntity<Void> updateVehicleInfo(@RequestParam("vehicleId") Integer vehicleId,
+                                                @RequestBody UpdateVehicleDto body) {
+    vehicleService.updateVehicle(vehicleId, body);
+    logger.info("Successfully updated vehicle with ID: " + vehicleId);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  public ResponseEntity<List<Vehicle>> listVehicles() {
     List<Vehicle> vehicles = vehicleService.listAvailableVehicles();
-    vehicles.stream().forEach(System.out::println);
-  }
-
-  public void updateVehicle(Scanner scanner) {
-    System.out.print("Vehicle's ID: ");
-    Integer vehicleId = Integer.valueOf(scanner.nextLine());
-    System.out.print("Vehicle's model: ");
-    Optional<String> model = Optional.of(scanner.nextLine());
-    System.out.print("Vehicle's brand: ");
-    Optional<String> brand = Optional.of(scanner.nextLine());
-    System.out.print("Vehicle's daily price: ");
-    Optional<Integer> dailyPrice = Optional.of(Integer.valueOf(scanner.nextLine()));
-    System.out.print("Vehicle's hour price: ");
-    Optional<Integer> hourPrice = Optional.of(Integer.valueOf(scanner.nextLine()));
-    System.out.print("Vehicle's plate number: ");
-    Optional<String> plateNumber = Optional.of(scanner.nextLine());
-    System.out.print("Vehicle's plate country: ");
-    Optional<String> country = Optional.of(scanner.nextLine());
-
-    vehicleService.updateVehicle(vehicleId, model, brand, plateNumber, country, dailyPrice, hourPrice);
-    System.out.println("Vehicle updated! ID" + vehicleId);
+    return ResponseEntity.status(HttpStatus.OK).body(vehicles);
   }
 }
