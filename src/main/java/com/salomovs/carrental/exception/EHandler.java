@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import jakarta.validation.ValidationException;
 import jakarta.validation.ConstraintViolationException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,7 +34,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
     
-    return ResponseEntity.status(500).body(map);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
   }
 
   @ExceptionHandler({ CustomerNotFoundException.class })
@@ -43,7 +44,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(404).body(map);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
   }
 
   @ExceptionHandler({ VehicleNotFoundException.class })
@@ -53,7 +54,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(404).body(map);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
   }
 
   @ExceptionHandler({ RentalNotFoundException.class })
@@ -63,7 +64,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(404).body(map);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
   }
 
   @ExceptionHandler({ InvoiceProcessingException.class })
@@ -73,7 +74,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(500).body(map);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(map);
   }
 
   @ExceptionHandler({ ValidationException.class })
@@ -83,7 +84,7 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(400).body(map);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
   }
 
   @ExceptionHandler({ ConstraintViolationException.class })
@@ -93,6 +94,6 @@ public class EHandler {
     Map<String, String> map = new HashMap<>();
     map.put("error", e.getLocalizedMessage());
 
-    return ResponseEntity.status(400).body(map);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
   }
 }
