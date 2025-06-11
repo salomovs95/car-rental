@@ -2,12 +2,17 @@ package com.salomovs.carrental.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,9 +21,7 @@ import com.salomovs.carrental.dto.UpdateVehicleDto;
 import com.salomovs.carrental.model.entity.Vehicle;
 import com.salomovs.carrental.service.VehicleService;
 
-import jakarta.validation.Valid;
-
-@RestController("/vehicles")
+@RestController @RequestMapping("/vehicles")
 public class VehicleController {
   private final VehicleService vehicleService;
   private Logger logger;
@@ -32,7 +35,7 @@ public class VehicleController {
   public ResponseEntity<Void> registerVehicle(@RequestBody @Valid RegisterVehicleDto body) {
     Integer vehicleId = vehicleService.registerVehicle(body);
     logger.info("New vehicle created with ID: " + vehicleId);
-    return ResponseEntity.status(201).build();
+    return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @PutMapping("/{vehicleId}/update")
@@ -40,11 +43,11 @@ public class VehicleController {
                                                 @RequestBody UpdateVehicleDto body) {
     vehicleService.updateVehicle(vehicleId, body);
     logger.info("Successfully updated vehicle with ID: " + vehicleId);
-    return ResponseEntity.status(200).build();
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   public ResponseEntity<List<Vehicle>> listVehicles() {
     List<Vehicle> vehicles = vehicleService.listAvailableVehicles();
-    return ResponseEntity.status(200).body(vehicles);
+    return ResponseEntity.status(HttpStatus.OK).body(vehicles);
   }
 }
