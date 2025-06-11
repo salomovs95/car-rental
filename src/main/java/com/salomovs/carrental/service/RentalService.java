@@ -26,6 +26,7 @@ public class RentalService {
 
   public void returnVehicle(Integer rentalId) {
     Rental rental = findRental(rentalId);
+    rental.setReturnAt(LocalDateTime.now());
     
     double duration = rental.calculateInterval();
     Vehicle vehicle = rental.getVehicle();
