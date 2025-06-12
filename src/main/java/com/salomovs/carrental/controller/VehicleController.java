@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salomovs.carrental.config.annotations.ApiGetOperation;
+import com.salomovs.carrental.config.annotations.ApiPostOperation;
+import com.salomovs.carrental.config.annotations.ApiPutOperation;
 import com.salomovs.carrental.dto.RegisterVehicleDto;
 import com.salomovs.carrental.dto.UpdateVehicleDto;
 import com.salomovs.carrental.model.entity.Vehicle;
@@ -32,14 +35,14 @@ public class VehicleController {
     this.logger = LoggerFactory.getLogger(VehicleController.class);
   }
 
-  @PostMapping
+  @PostMapping @ApiPostOperation(summary="Register a new Vehicle")
   public ResponseEntity<Void> registerVehicle(@RequestBody @Valid RegisterVehicleDto body) {
     Integer vehicleId = vehicleService.registerVehicle(body);
     logger.info("New vehicle created with ID: " + vehicleId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
-  @PutMapping("/{vehicleId}/update")
+  @PutMapping("/{vehicleId}/update") @ApiPutOperation(summary="Update a Vehicle's info")
   public ResponseEntity<Void> updateVehicleInfo(@RequestParam("vehicleId") Integer vehicleId,
                                                 @RequestBody UpdateVehicleDto body) {
     vehicleService.updateVehicle(vehicleId, body);
@@ -47,7 +50,7 @@ public class VehicleController {
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @GetMapping
+  @GetMapping @ApiGetOperation(summary="Retrieve a list of available Vehicles")
   public ResponseEntity<List<Vehicle>> listVehicles() {
     List<Vehicle> vehicles = vehicleService.listAvailableVehicles();
     return ResponseEntity.status(HttpStatus.OK).body(vehicles);

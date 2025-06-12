@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.salomovs.carrental.config.annotations.ApiGetOperation;
+import com.salomovs.carrental.config.annotations.ApiPostOperation;
+import com.salomovs.carrental.config.annotations.ApiPutOperation;
 import com.salomovs.carrental.dto.InvoiceDto;
 import com.salomovs.carrental.dto.VehicleRentalDto;
 import com.salomovs.carrental.model.entity.Customer;
@@ -46,7 +49,7 @@ public class RentalController {
     this.invoiceService = invoiceService;
   }
 
-  @PostMapping
+  @PostMapping @ApiPostOperation(summary="Rent a Vehicle")
   public ResponseEntity<Void> handleRentalment(@RequestBody @Valid VehicleRentalDto body) {
     Customer customer = customerService.findCustomer(body.customerId());
     Vehicle vehicle = vehicleService.findVehicle(body.vehicleId());
@@ -56,26 +59,26 @@ public class RentalController {
   }
 
 
-  @PutMapping("/{rentalId}")
+  @PutMapping("/{rentalId}") @ApiPutOperation(summary="Return a rent Vehicle")
   public ResponseEntity<Void> rentalReturn(@RequestParam("rentalId") Integer rentalId) {
     rentalService.returnVehicle(rentalId);
     logger.info("Vehicle successfully returned for rental of ID: " + rentalId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 
-  @GetMapping
+  @GetMapping @ApiGetOperation(summary="Retrieve a list of all Rentals")
   public ResponseEntity<List<Rental>> listRentals() {
     List<Rental> rentals = rentalService.listRentals();
     return ResponseEntity.status(HttpStatus.OK).body(rentals);
   }
 
-  @GetMapping("/{rentalId}")
+  @GetMapping("/{rentalId}") @ApiGetOperation(summary="Retrieve a Rental's info")
   public ResponseEntity<Rental> findRental(@RequestParam("rentalId") Integer rentalId) {
     Rental rental = rentalService.findRental(rentalId);
     return ResponseEntity.status(HttpStatus.OK).body(rental);
   }
 
-  @GetMapping("/{rentalId}/invoice")
+  @GetMapping("/{rentalId}/invoice") @ApiGetOperation(summary="Retrieve a Rental Invoice")
   public ResponseEntity<InvoiceDto> getInvoice(@RequestParam("rentalId") Integer rentalId) {
     Rental rental = rentalService.findRental(rentalId);
     InvoiceDto invoice = invoiceService.processInvoice(rental);
